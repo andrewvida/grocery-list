@@ -29,7 +29,6 @@ app.configure ->
   app.use(express.bodyParser())
   app.use(express.methodOverride())
   app.use(app.router)
-  # app.use(express.favicon(publicDir + '/favicon.ico', { maxAge: 2592000000 }))
   app.use(express.compiler({src: coffeeDir, dest: publicDir, enable: ['coffeescript']}))
   app.use(stylus.middleware({src: publicDir, compress: true}))
   app.use express.static(publicDir)
