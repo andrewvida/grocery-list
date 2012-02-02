@@ -1,7 +1,7 @@
 onHeroku = process.env.PORT
 
 if onHeroku
-  dbString = "mongodb://heroku:edgecase@staff.mongohq.com:10066/app2636005"
+  dbString = "mongodb://heroku:budw31s3r#8@staff.mongohq.com:10041/app2738679"
   port     = process.env.PORT
 else
   dbString = "localhost:27017/grocery-items"
@@ -80,7 +80,7 @@ io.sockets.on 'connection', (socket) ->
 
   socket.on 'item edited', (data) ->
     editEntry data, ->
-     io.sockets.emit('item was edited', data) 
+     io.sockets.emit('item was edited', data)
 
   socket.on 'item deleted', (data) ->
     deleteEntry data, ->
