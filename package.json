@@ -10,5 +10,6 @@
     ,"socket.io": "latest"
     ,"coffee-script": "latest"
     ,"mkdirp": "latest"
+    ,"socket.io-client":"latest"
   }
 }
