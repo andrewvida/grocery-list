@@ -1,0 +1,90 @@
+onHeroku = process.env.PORT
+
+if onHeroku
+  dbString = "mongodb://heroku:edgecase@staff.mongohq.com:10066/app2636005"
+  port     = process.env.PORT
+else
+  dbString = "localhost:27017/grocery-items"
+  port     = 3000
+
+express   = require('express')
+stylus    = require('stylus')
+mongo     = require('mongoskin')
+coffee    = require('coffee-script')
+db        = mongo.db(dbString)
+coll      = db.collection('items')
+routes    = require('./routes')
+app       = module.exports = express.createServer()
+io        = require('socket.io').listen(app)
+coffeeDir = __dirname + '/coffee'
+publicDir = __dirname + '/public'
+cssDir    = publicDir + '/stylesheets'
+
+
+# Configuration
+
+app.configure ->
+  app.set('views', __dirname + '/views')
+  app.set('view engine', 'jade')
+  app.use(express.bodyParser())
+  app.use(express.methodOverride())
+  app.use(app.router)
+  # app.use(express.favicon(publicDir + '/favicon.ico', { maxAge: 2592000000 }))
+  app.use(express.compiler({src: coffeeDir, dest: publicDir, enable: ['coffeescript']}))
+  app.use(stylus.middleware({src: publicDir, compress: true}))
+  app.use express.static(publicDir)
+
+if onHeroku
+  io.configure ->
+    io.set("transports", ["xhr-polling"])
+    io.set("polling duration", 10)
+
+app.configure 'development', ->
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
+
+app.configure 'production', ->
+  app.use(express.errorHandler())
+
+
+# Routes
+
+app.get '/', (req, res) ->
+  coll.find({purchased: false}).toArray (error, items) ->
+    data = JSON.stringify(items)
+    res.render('index.jade', {items: data})
+
+
+
+# Database
+
+insertEntry = (data, callback) ->
+  coll.insert data, ->
+    callback()
+
+editEntry = (data, callback) ->
+  coll.updateById data._id, {$set: {name: data.name}}, ->
+    callback()
+
+deleteEntry = (data, callback) ->
+  coll.removeById data._id, ->
+    callback()
+
+
+
+# Sockets
+
+io.sockets.on 'connection', (socket) ->
+  socket.on 'new item posted', (data) ->
+    insertEntry data, ->
+      io.sockets.emit('new item saved', data)
+
+  socket.on 'item edited', (data) ->
+    editEntry data, ->
+     io.sockets.emit('item was edited', data) 
+
+  socket.on 'item deleted', (data) ->
+    deleteEntry data, ->
+      io.sockets.emit('item was deleted', data)
+
+app.listen(port)
+console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env)
