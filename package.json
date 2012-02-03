@@ -5,6 +5,7 @@
   ,"dependencies": {
     "express": "2.5.2"
     ,"jade": ">= 0.0.1"
+    , "mkdirp": ">=0.0.7"
     ,"stylus": ">= 0.0.1"
     ,"mongoskin": ">= 0.0.1"
     ,"socket.io": "latest"
