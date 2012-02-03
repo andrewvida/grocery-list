@@ -50,7 +50,7 @@ app.configure 'production', ->
 app.get '/', (req, res) ->
   coll.find({purchased: false}).toArray (error, items) ->
     data = JSON.stringify(items)
-    res.render('index.jade', {items: data})
+    res.render('index', {items: data})
 
 
 
