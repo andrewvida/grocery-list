@@ -1,11 +1,11 @@
 .container
   h1 Grocery List
 
-  form.form-inline
-    input#new-item.span8(placeholder="Enter an item for your grocery list")
+  form.form-horizontal
+    input#new-item.span6(placeholder="Enter an item for your grocery list")
     button#save.btn.btn-primary Save
 
-  ul#existing-items.unstyled
+    ul#existing-items.unstyled
 
 script#item-template(type="x-handlebars-template")
   li(data-id="{{_id}}")
@@ -18,7 +18,8 @@ script#item-template(type="x-handlebars-template")
         {{/if}}
       input.span6(type="text", value="{{name}}")
 
-
+    footer.footer
+      p Designed and built by Andrew Vida and Matt Darby with Express.js and Socket.IO
 script(type="text/javascript")
   window.items = !{items}
 
