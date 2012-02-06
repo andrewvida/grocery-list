@@ -1,0 +1,30 @@
+.container
+  h1 Grocery Getter
+
+  form.form-horizontal
+    input#new-item.span6(placeholder="Enter an item for your grocery list")
+    button#save.btn.btn-primary Save
+
+    ul#existing-items.unstyled
+
+script#item-template(type="x-handlebars-template")
+  li(data-id="{{_id}}")
+    .input-prepend
+      span.add-on
+        {{#if purchased}}
+        input(type="checkbox", checked="checked")
+        {{else}}
+        input(type="checkbox")
+        {{/if}}
+      input.span6(type="text", value="{{name}}")
+
+    footer.footer
+      p Designed and built by Andrew Vida and Matt Darby with Express.js and Socket.IO
+script(type="text/javascript")
+  window.items = !{items}
+
+script(type="text/javascript", src="/client.js")
+
+
+
+

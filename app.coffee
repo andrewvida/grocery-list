@@ -46,11 +46,13 @@ app.configure 'production', ->
 
 
 # Routes
-
 app.get '/', (req, res) ->
+  res.render('index')
+
+app.get '/list', (req, res) ->
   coll.find({purchased: false}).toArray (error, items) ->
     data = JSON.stringify(items)
-    res.render('index', {items: data})
+    res.render('list', {items: data})
 
 
 
