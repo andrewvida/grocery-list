@@ -12,7 +12,8 @@ stylus    = require('stylus')
 mongo     = require('mongoskin')
 coffee    = require('coffee-script')
 db        = mongo.db(dbString)
-coll      = db.collection('items')
+itemsColl = db.collection('items')
+usersColl = db.collection('users')
 routes    = require('./routes')
 app       = module.exports = express.createServer()
 io        = require('socket.io').listen(app)
@@ -50,7 +51,7 @@ app.get '/', (req, res) ->
   res.render('index')
 
 app.get '/list', (req, res) ->
-  coll.find({purchased: false}).toArray (error, items) ->
+  itemsColl.find({purchased: false}).toArray (error, items) ->
     data = JSON.stringify(items)
     res.render('list', {items: data})
 
@@ -59,15 +60,15 @@ app.get '/list', (req, res) ->
 # Database
 
 insertEntry = (data, callback) ->
-  coll.insert data, ->
+  itemsColl.insert data, ->
     callback()
 
 editEntry = (data, callback) ->
-  coll.updateById data._id, {$set: {name: data.name}}, ->
+  itemsColl.updateById data._id, {$set: {name: data.name}}, ->
     callback()
 
 deleteEntry = (data, callback) ->
-  coll.removeById data._id, ->
+  itemsColl.removeById data._id, ->
     callback()
 
 
